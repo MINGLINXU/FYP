@@ -34,7 +34,6 @@ public class LoginActivity extends AppCompatActivity {
 
     String userID;
     String role = "";
-    String name = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,9 +60,6 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent i = new Intent(LoginActivity.this, ClassifierActivity.class);
-//                startActivity(i);
-//                finish();
                 String email = etEmail.getText().toString().trim();
                 String password = etPassword.getText().toString().trim();
                 tvRegister.setEnabled(false);

@@ -100,7 +100,7 @@ public abstract class CameraActivity extends AppCompatActivity
   private Spinner deviceSpinner;
   private TextView threadsTextView;
 
-  private Model model = Model.QUANTIZED_EFFICIENTNET;
+  private Model model = Model.FLOAT_MOBILENET;
   private Device device = Device.CPU;
   private int numThreads = -1;
 
