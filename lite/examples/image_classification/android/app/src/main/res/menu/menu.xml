@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
@@ -10,17 +9,4 @@
         android:title="Identification"
         android:icon="@drawable/ic_label_black_24dp"/>
 
-=======
-<?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <item android:id="@+id/dashboard"
-        android:title="Dashboard"
-        android:icon="@drawable/ic_dashboard_black_24dp"/>
-
-    <item android:id="@+id/Identificatin"
-        android:title="Identification"
-        android:icon="@drawable/ic_label_black_24dp"/>
-
->>>>>>> origin/master
 </menu>
