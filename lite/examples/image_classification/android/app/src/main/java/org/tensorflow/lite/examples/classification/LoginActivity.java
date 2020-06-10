@@ -127,7 +127,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 role = documentSnapshot.getString("Role");
                 if (role.equals("Admin")) {
-                    startActivity(new Intent(getApplicationContext(), DashBoardActivity.class));
+                    startActivity(new Intent(getApplicationContext(), BottomNavActivity.class));
                     finish();
                 } else {
                     startActivity(new Intent(getApplicationContext(), ClassifierActivity.class));
