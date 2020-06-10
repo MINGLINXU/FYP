@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "989404071781",
+    "firebase_url": "https://fyp-plant-disease-detection.firebaseio.com",
+    "project_id": "fyp-plant-disease-detection",
+    "storage_bucket": "fyp-plant-disease-detection.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:989404071781:android:b7bf7abcb553396ddf038c",
+        "android_client_info": {
+          "package_name": "org.tensorflow.lite.examples.classification"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "989404071781-gp39se8qhjdcsnhs7mh5gnm5jq3t7ats.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBh8EWwfa62iqIA-HApv1uQNMJYg3loLW0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "989404071781-gp39se8qhjdcsnhs7mh5gnm5jq3t7ats.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
