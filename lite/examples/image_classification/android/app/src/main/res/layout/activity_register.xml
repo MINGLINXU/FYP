@@ -92,7 +92,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Register"
-        android:textStyle="bold" />
+        android:textStyle="bold|italic" />
 
     <TextView
         android:id="@+id/tvLogin"
@@ -101,7 +101,9 @@
         android:layout_gravity="center"
         android:fontFamily="sans-serif-black"
         android:text="Login Now"
-        android:textSize="20sp" />
+        android:textAllCaps="false"
+        android:textSize="20sp"
+        android:textStyle="italic" />
 
     <ProgressBar
         android:id="@+id/progressBar"
