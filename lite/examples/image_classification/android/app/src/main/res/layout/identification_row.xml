@@ -6,7 +6,7 @@
     android:background="#81EFE2">
 
     <ImageView
-        android:id="@+id/img"
+        android:id="@+id/iv_Image"
         android:layout_width="150dp"
         android:layout_height="150dp" />
 
