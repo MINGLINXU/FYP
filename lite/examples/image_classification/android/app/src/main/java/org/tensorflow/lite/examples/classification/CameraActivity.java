@@ -37,6 +37,8 @@ import android.os.Trace;
 import androidx.annotation.NonNull;
 import androidx.annotation.UiThread;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.util.Log;
 import android.util.Size;
 import android.view.Surface;
 import android.view.View;
@@ -49,7 +51,14 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.nio.ByteBuffer;
 import java.util.List;
 import org.tensorflow.lite.examples.classification.env.ImageUtils;
@@ -66,6 +75,8 @@ public abstract class CameraActivity extends AppCompatActivity
         View.OnClickListener,
         AdapterView.OnItemSelectedListener {
   private static final Logger LOGGER = new Logger();
+
+  private static final String TAG = "CameraActivity";
 
   private static final int PERMISSIONS_REQUEST = 1;
 
@@ -106,6 +117,9 @@ public abstract class CameraActivity extends AppCompatActivity
   private Device device = Device.CPU;
   private int numThreads = -1;
 
+  FirebaseFirestore fbFirestore;
+  CollectionReference IdentificationRef;
+
   @Override
   protected void onCreate(final Bundle savedInstanceState) {
     LOGGER.d("onCreate " + this);
@@ -131,6 +145,8 @@ public abstract class CameraActivity extends AppCompatActivity
     bottomSheetArrowImageView = findViewById(R.id.bottom_sheet_arrow);
     btn_save = findViewById(R.id.btn_save);
 
+    fbFirestore = FirebaseFirestore.getInstance();
+    IdentificationRef = fbFirestore.collection("identification");
 
     ViewTreeObserver vto = gestureLayout.getViewTreeObserver();
     vto.addOnGlobalLayoutListener(
@@ -205,10 +221,36 @@ public abstract class CameraActivity extends AppCompatActivity
     btn_save.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        Toast.makeText(CameraActivity.this, "Image Saved " + recognitionTextView.getText() , Toast.LENGTH_SHORT).show();
+        sendDataToFireBase();
       }
     });
 
+  }
+
+  private void sendDataToFireBase() {
+    String percent = recognitionValueTextView.getText().toString();
+
+    if (percent.endsWith("%")) {
+      StringBuffer number = new StringBuffer(percent).deleteCharAt(percent.length() - 1);
+      float percentageFloat = Float.valueOf(String.valueOf(number));
+
+    Identification identification = new Identification(recognitionTextView.getText().toString(), percentageFloat);
+
+    IdentificationRef.add(identification)
+            .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+              @Override
+              public void onSuccess(DocumentReference documentReference) {
+                Toast.makeText(CameraActivity.this, "Added Successfully", Toast.LENGTH_SHORT).show();
+              }
+            })
+            .addOnFailureListener(new OnFailureListener() {
+              @Override
+              public void onFailure(@NonNull Exception e) {
+                Toast.makeText(CameraActivity.this, "Error!", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, e.toString());
+              }
+            });
+    }
   }
 
   protected int[] getRgbBytes() {

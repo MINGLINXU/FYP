@@ -13,10 +13,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
-public class Identification_list_Adapter extends ArrayAdapter<identification> {
+public class Identification_list_Adapter extends ArrayAdapter<Identification> {
 
 
-    ArrayList<identification> identificationList;
+    ArrayList<Identification> identificationList;
     Context context;
     FirebaseAuth fbAuth;
     FirebaseFirestore fbFirestore;
@@ -25,7 +25,7 @@ public class Identification_list_Adapter extends ArrayAdapter<identification> {
     TextView tvName, tv_percentage;
 
 
-    public Identification_list_Adapter(Context context, int resource, ArrayList<identification> identificationList) {
+    public Identification_list_Adapter(Context context, int resource, ArrayList<Identification> identificationList) {
         super(context, resource, identificationList);
         this.context = context;
         this.identificationList = identificationList;
@@ -47,7 +47,7 @@ public class Identification_list_Adapter extends ArrayAdapter<identification> {
         fbFirestore = FirebaseFirestore.getInstance();
 
 
-        identification currentItem = identificationList.get(position);
+        Identification currentItem = identificationList.get(position);
 
 
 

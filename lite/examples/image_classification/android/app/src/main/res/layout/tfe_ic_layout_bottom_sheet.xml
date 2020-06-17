@@ -26,6 +26,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:src="@drawable/icn_chevron_up" />
+
         <Button
             android:id="@+id/btn_save"
             android:layout_width="match_parent"

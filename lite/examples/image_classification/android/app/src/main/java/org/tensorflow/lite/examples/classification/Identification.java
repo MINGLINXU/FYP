@@ -2,12 +2,12 @@ package org.tensorflow.lite.examples.classification;
 
 import java.io.Serializable;
 
-public class identification implements Serializable {
+public class Identification implements Serializable {
 
     private String diseaseName;
-    private String percentage;
+    private Float percentage;
 
-    public identification(String diseaseName, String percentage){
+    public Identification(String diseaseName, Float percentage){
         this.diseaseName = diseaseName;
         this.percentage = percentage;
     }
@@ -17,7 +17,6 @@ public class identification implements Serializable {
         return diseaseName;
     }
 
-    public String getPercentage() {
-        return percentage;
-    }
+    public Float getPercentage() { return percentage; }
+
 }
