@@ -25,7 +25,7 @@ public class Identification_list_Adapter extends ArrayAdapter<Identification> {
     TextView tvName, tv_percentage;
 
 
-    public Identification_list_Adapter(Context context, int resource, ArrayList<Identification> identificationList) {
+    public Identification_list_Adapter(Context context,int resource, ArrayList<Identification> identificationList) {
         super(context, resource, identificationList);
         this.context = context;
         this.identificationList = identificationList;
@@ -34,8 +34,8 @@ public class Identification_list_Adapter extends ArrayAdapter<Identification> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        LayoutInflater inflater = (LayoutInflater) context
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         View rowView = inflater.inflate(resource, parent, false);
 
@@ -46,8 +46,10 @@ public class Identification_list_Adapter extends ArrayAdapter<Identification> {
         fbAuth = FirebaseAuth.getInstance();
         fbFirestore = FirebaseFirestore.getInstance();
 
-
         Identification currentItem = identificationList.get(position);
+
+        tvName.setText(currentItem.getDiseaseName());
+        tv_percentage.setText(currentItem.getPercentage().toString());
 
 
 

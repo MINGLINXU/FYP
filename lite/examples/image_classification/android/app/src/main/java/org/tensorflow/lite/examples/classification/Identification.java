@@ -11,7 +11,7 @@ public class Identification implements Serializable {
         this.diseaseName = diseaseName;
         this.percentage = percentage;
     }
-    
+
 
     public String getDiseaseName() {
         return diseaseName;
