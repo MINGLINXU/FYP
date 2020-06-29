@@ -25,6 +25,7 @@
         android:layout_gravity="center" />
 
     <RadioGroup
+        android:id="@+id/rg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
@@ -52,6 +53,13 @@
             android:textSize="24sp"
             android:textStyle="italic" />
     </RadioGroup>
+
+    <Spinner
+        android:id="@+id/spinner"
+        android:entries="@array/identification_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"/>
 
     <Button
         android:id="@+id/btn_Update"

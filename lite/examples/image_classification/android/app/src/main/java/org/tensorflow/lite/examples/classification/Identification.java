@@ -13,7 +13,7 @@ public class Identification implements Serializable {
     }
 
 
-    public String getDiseaseName() {
+    public String getdiseaseName() {
         return diseaseName;
     }
 

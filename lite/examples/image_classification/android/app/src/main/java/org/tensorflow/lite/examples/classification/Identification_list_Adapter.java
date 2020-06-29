@@ -48,8 +48,8 @@ public class Identification_list_Adapter extends ArrayAdapter<Identification> {
 
         Identification currentItem = identificationList.get(position);
 
-        tvName.setText(currentItem.getDiseaseName());
-        tv_percentage.setText(currentItem.getPercentage().toString());
+        tvName.setText(currentItem.getdiseaseName());
+        tv_percentage.setText(currentItem.getPercentage().toString() + "%");
 
 
 
