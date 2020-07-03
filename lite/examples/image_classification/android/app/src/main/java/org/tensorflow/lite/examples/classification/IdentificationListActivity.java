@@ -67,8 +67,38 @@ public class IdentificationListActivity extends Fragment {
             }
         });
 
+        return view;
+    }
+
+    private void RetrieveData(String identification) {
+
+        IdentifcationRef = db.collection("identification").document(identification);
+        IdentifcationRef.addSnapshotListener(getActivity(), new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                String diseaseName = documentSnapshot.getString("diseaseName");
+                Double percentage = documentSnapshot.getDouble("percentage");
+                String strPercentage = percentage + "";
+                Float fltPercentage = Float.parseFloat(strPercentage);
+
+                identificationList.add(new Identification(diseaseName,fltPercentage));
+                Log.d("Loop List size: ",identificationList.size() + "");
+                lv.setAdapter(identificationAdapter);
+                Toast.makeText(getActivity(), diseaseName + fltPercentage, Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
+    }
+
+    @Override
+    public void onStart() {
         db = FirebaseFirestore.getInstance();
         identificationAdapter = new Identification_list_Adapter(getContext(),R.layout.identification_row,identificationList);
+//        identificationList.clear();
+//        identificationIDList.clear();
+
+
 
         db.collection(COLLECTION_KEY).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -92,27 +122,11 @@ public class IdentificationListActivity extends Fragment {
         });
 
         identificationAdapter.addAll(identificationList);
-        return view;
+        Log.d("List size: ",identificationList.size() + "");
+        Log.d("ID size: ",identificationIDList.size() +"");
+        identificationAdapter.notifyDataSetChanged();
+
+
+        super.onStart();
     }
-
-    private void RetrieveData(String identification) {
-
-        IdentifcationRef = db.collection("identification").document(identification);
-        IdentifcationRef.addSnapshotListener(getActivity(), new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
-                String diseaseName = documentSnapshot.getString("diseaseName");
-                Double percentage = documentSnapshot.getDouble("percentage");
-                String strPercentage = percentage + "";
-                Float fltPercentage = Float.parseFloat(strPercentage);
-
-                identificationList.add(new Identification(diseaseName,fltPercentage));
-                lv.setAdapter(identificationAdapter);
-                Toast.makeText(getActivity(), diseaseName + fltPercentage, Toast.LENGTH_SHORT).show();
-
-            }
-        });
-
-    }
-
 }

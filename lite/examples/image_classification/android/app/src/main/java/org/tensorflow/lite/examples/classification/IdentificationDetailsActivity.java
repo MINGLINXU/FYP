@@ -87,33 +87,10 @@ public class IdentificationDetailsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 sendDataToFireBase();
+
             }
         });
 
-    }
-
-    private void deleteFromFirebase() {
-        Intent i = getIntent();
-
-        int pos = i.getIntExtra("pos",0);
-        ArrayList<String> firebaseID = i.getStringArrayListExtra("FirebaseID");
-
-        Toast.makeText(this, firebaseID.get(pos), Toast.LENGTH_SHORT).show();
-
-        fbFirestore.collection("identification").document("6ye8r6zlTwu8gDdKn4Qw")
-                .delete()
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "DocumentSnapshot "+ firebaseID.get(pos) + "successfully deleted!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error deleting document", e);
-                    }
-                });
     }
 
     private void sendDataToFireBase() {
@@ -130,14 +107,34 @@ public class IdentificationDetailsActivity extends AppCompatActivity {
                         public void onSuccess(DocumentReference documentReference) {
                             Toast.makeText(IdentificationDetailsActivity.this, "Added Successfully", Toast.LENGTH_SHORT).show();
                             deleteFromFirebase();
+                            Intent i = new Intent(IdentificationDetailsActivity.this,IdentificationListActivity.class);
+                            startActivity(i);
                         }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(IdentificationDetailsActivity.this, "Error!", Toast.LENGTH_SHORT).show();
-                            Log.d(TAG, e.toString());
-                        }
+
+                        private void deleteFromFirebase() {
+
+        Intent i = getIntent();
+
+        int pos = i.getIntExtra("pos",0);
+        ArrayList<String> firebaseID = i.getStringArrayListExtra("FirebaseID");
+
+        fbFirestore.collection("identification").document(firebaseID.get(pos))
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "DocumentSnapshot "+ firebaseID.get(pos) + "successfully deleted!");
+                        Intent i = new Intent(IdentificationDetailsActivity.this,BottomNavActivity.class);
+                        startActivity(i);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error deleting document", e);
+                    }
+                });
+                            }
                     });
         }else {
             String disease = spinner.getSelectedItem().toString();;
@@ -147,6 +144,31 @@ public class IdentificationDetailsActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess(DocumentReference documentReference) {
                             Toast.makeText(IdentificationDetailsActivity.this, "Added Successfully", Toast.LENGTH_SHORT).show();
+                            deleteFromFirebase();
+                        }
+
+                        private void deleteFromFirebase() {
+                            Intent i = getIntent();
+
+                            int pos = i.getIntExtra("pos",0);
+                            ArrayList<String> firebaseID = i.getStringArrayListExtra("FirebaseID");
+
+                            fbFirestore.collection("identification").document(firebaseID.get(pos))
+                                    .delete()
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            Intent i = new Intent(IdentificationDetailsActivity.this,BottomNavActivity.class);
+                                            startActivity(i);
+                                            Log.d(TAG, "DocumentSnapshot "+ firebaseID.get(pos) + "successfully deleted!");
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Log.w(TAG, "Error deleting document", e);
+                                        }
+                                    });
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {

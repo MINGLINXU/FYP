@@ -8,10 +8,16 @@
     tools:context=".DashboardActivity">
 
     <TextView
+        android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="DashBoard"
-        android:textSize="50dp"
-        android:textColor="#fff"/>
+        android:textColor="#fff"
+        android:textSize="50dp" />
+
+    <com.github.mikephil.charting.charts.PieChart
+        android:id="@+id/idPieChart"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></com.github.mikephil.charting.charts.PieChart>
 
 </RelativeLayout>
