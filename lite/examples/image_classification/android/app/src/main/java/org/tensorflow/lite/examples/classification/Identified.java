@@ -1,5 +1,7 @@
 package org.tensorflow.lite.examples.classification;
 
+import java.io.Serializable;
+
 public class Identified {
 
     private String oldDiseaseName;
