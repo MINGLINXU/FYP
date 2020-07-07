@@ -25,6 +25,8 @@ import com.anychart.AnyChartView;
 import com.anychart.chart.common.dataentry.DataEntry;
 import com.anychart.chart.common.dataentry.ValueDataEntry;
 import com.anychart.charts.Pie;
+import com.anychart.enums.Align;
+import com.anychart.enums.LegendLayout;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -38,7 +40,7 @@ import java.util.List;
 
 public class DashboardActivity extends Fragment {
     private static String TAG = "DashboardActivity";
-    Pie pie;
+
     List<DataEntry> dataEntries = new ArrayList<>();
 
     AnyChartView anyChartView;
@@ -86,13 +88,33 @@ public class DashboardActivity extends Fragment {
         diseaseNames.add("14 Tomato Tomato Yellow Leaf Curl Virus");
 
         retrieveData();
+
+
+
+        Pie pie = AnyChart.pie();
+        pie.title("Number of identified diseases");
+
+        pie.labels().position("outside");
+
+        pie.legend().title().enabled(true);
+        pie.legend().title()
+                .text("Disease Names")
+                .padding(0d, 0d, 10d, 0d);
+
+        pie.legend()
+                .position("center-bottom")
+                .itemsLayout(LegendLayout.HORIZONTAL)
+                .align(Align.CENTER);
+
+        anyChartView.setChart(pie);
+
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 category = parent.getItemAtPosition(position).toString();
                 filteredLabels.clear();
                 filteredCount.clear();
-
+                dataEntries.clear();
                 if (!category.equals("Filter by...")){
                     for (int i = 0; i<labels.size(); i++){
                         if (labels.get(i).contains(category)){
@@ -106,11 +128,9 @@ public class DashboardActivity extends Fragment {
                         Log.d("pie label", filteredLabels + "");
                         Log.d("pie count", filteredCount + "");
                         dataEntries.add(new ValueDataEntry(filteredLabels.get(i),filteredCount.get(i)));
+                        pie.data(dataEntries);
                     }
-                    pie = AnyChart.pie();
-                    pie.data(dataEntries);
-                    pie.title(category);
-                    anyChartView.setChart(pie);
+
                 }
             }
 
@@ -167,20 +187,5 @@ public class DashboardActivity extends Fragment {
 
 
     }
-//
-//    private void setupPieChart() {
-//
-//        Log.d("occur","pie setup");
-//        for (int i = 0; i < filteredLabels.size(); i++){
-//            Log.d("pie label", filteredLabels + "");
-//            Log.d("pie count", filteredCount + "");
-//            dataEntries.add(new ValueDataEntry(filteredLabels.get(i),filteredCount.get(i)));
-//        }
-//
-//        pie.title(category);
-//        anyChartView.setChart(pie);
-//
-//
-//
-//    }
+
 }
