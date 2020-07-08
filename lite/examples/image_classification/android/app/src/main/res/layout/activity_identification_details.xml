@@ -56,7 +56,7 @@
 
     <Spinner
         android:id="@+id/spinner"
-        android:entries="@array/identification_name"
+        android:entries="@array/list_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"/>

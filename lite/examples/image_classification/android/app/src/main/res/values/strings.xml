@@ -23,4 +23,22 @@
         <item>Potato</item>
         <item>Tomato</item>
     </string-array>
+
+    <string-array name="list_name">
+        <item>0 Pepper bell Bacterial spot</item>
+        <item>1 Pepper bell healthy</item>
+        <item>2 Potato Early blight</item>
+        <item>3 Potato healthy</item>
+        <item>4 Potato Late_blight</item>
+        <item>5 Tomato Bacterial spot</item>
+        <item>6 Tomato Early blight</item>
+        <item>7 Tomato healthy</item>
+        <item>8 Tomato Late blight</item>
+        <item>9 Tomato Leaf Mold</item>
+        <item>10 Tomato Septoria leaf spot</item>
+        <item>11 Tomato Spider mites Two-spotted spider mite</item>
+        <item>12 Tomato Target Spot</item>
+        <item>13 Tomato Tomato mosaic virus</item>
+        <item>14 Tomato Tomato Yellow Leaf Curl Virus</item>
+    </string-array>
 </resources>
