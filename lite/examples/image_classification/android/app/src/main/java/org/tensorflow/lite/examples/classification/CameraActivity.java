@@ -118,16 +118,16 @@ public abstract class CameraActivity extends AppCompatActivity
       recognitionValueTextView,
       recognition1ValueTextView,
       recognition2ValueTextView;
-  protected TextView frameValueTextView,
-      cropValueTextView,
-      cameraResolutionTextView,
-      rotationTextView,
-      inferenceTimeTextView;
+//  protected TextView frameValueTextView,
+//      cropValueTextView;
+//      cameraResolutionTextView,
+//      rotationTextView,
+//      inferenceTimeTextView;
   protected ImageView bottomSheetArrowImageView;
-  private ImageView plusImageView, minusImageView;
-  private Spinner modelSpinner;
-  private Spinner deviceSpinner;
-  private TextView threadsTextView;
+//  private ImageView plusImageView, minusImageView;
+//  private Spinner modelSpinner;
+//  private Spinner deviceSpinner;
+//  private TextView threadsTextView;
   private Button btn_save;
 
   private Model model = Model.FLOAT_MOBILENET;
@@ -154,11 +154,11 @@ public abstract class CameraActivity extends AppCompatActivity
       requestPermission();
     }
 
-    threadsTextView = findViewById(R.id.threads);
-    plusImageView = findViewById(R.id.plus);
-    minusImageView = findViewById(R.id.minus);
-    modelSpinner = findViewById(R.id.model_spinner);
-    deviceSpinner = findViewById(R.id.device_spinner);
+//    threadsTextView = findViewById(R.id.threads);
+//    plusImageView = findViewById(R.id.plus);
+//    minusImageView = findViewById(R.id.minus);
+//    modelSpinner = findViewById(R.id.model_spinner);
+//    deviceSpinner = findViewById(R.id.device_spinner);
     bottomSheetLayout = findViewById(R.id.bottom_sheet_layout);
     gestureLayout = findViewById(R.id.gesture_layout);
     sheetBehavior = BottomSheetBehavior.from(bottomSheetLayout);
@@ -226,21 +226,21 @@ public abstract class CameraActivity extends AppCompatActivity
     recognition2TextView = findViewById(R.id.detected_item2);
     recognition2ValueTextView = findViewById(R.id.detected_item2_value);
 
-    frameValueTextView = findViewById(R.id.frame_info);
-    cropValueTextView = findViewById(R.id.crop_info);
-    cameraResolutionTextView = findViewById(R.id.view_info);
-    rotationTextView = findViewById(R.id.rotation_info);
-    inferenceTimeTextView = findViewById(R.id.inference_info);
+//    frameValueTextView = findViewById(R.id.frame_info);
+//    cropValueTextView = findViewById(R.id.crop_info);
+//    cameraResolutionTextView = findViewById(R.id.view_info);
+//    rotationTextView = findViewById(R.id.rotation_info);
+//    inferenceTimeTextView = findViewById(R.id.inference_info);
 
-    modelSpinner.setOnItemSelectedListener(this);
-    deviceSpinner.setOnItemSelectedListener(this);
+//    modelSpinner.setOnItemSelectedListener(this);
+//    deviceSpinner.setOnItemSelectedListener(this);
 
-    plusImageView.setOnClickListener(this);
-    minusImageView.setOnClickListener(this);
+//    plusImageView.setOnClickListener(this);
+//    minusImageView.setOnClickListener(this);
 
-    model = Model.valueOf(modelSpinner.getSelectedItem().toString().toUpperCase());
-    device = Device.valueOf(deviceSpinner.getSelectedItem().toString());
-    numThreads = Integer.parseInt(threadsTextView.getText().toString().trim());
+//    model = Model.valueOf(modelSpinner.getSelectedItem().toString().toUpperCase());
+//    device = Device.valueOf(deviceSpinner.getSelectedItem().toString());
+//    numThreads = Integer.parseInt(threadsTextView.getText().toString().trim());
 
     btn_save.setOnClickListener(new View.OnClickListener() {
       @Override
@@ -629,25 +629,25 @@ public abstract class CameraActivity extends AppCompatActivity
     }
   }
 
-  protected void showFrameInfo(String frameInfo) {
-    frameValueTextView.setText(frameInfo);
-  }
-
-  protected void showCropInfo(String cropInfo) {
-    cropValueTextView.setText(cropInfo);
-  }
-
-  protected void showCameraResolution(String cameraInfo) {
-    cameraResolutionTextView.setText(cameraInfo);
-  }
-
-  protected void showRotationInfo(String rotation) {
-    rotationTextView.setText(rotation);
-  }
-
-  protected void showInference(String inferenceTime) {
-    inferenceTimeTextView.setText(inferenceTime);
-  }
+//  protected void showFrameInfo(String frameInfo) {
+////    frameValueTextView.setText(frameInfo);
+//  }
+//
+//  protected void showCropInfo(String cropInfo) {
+////    cropValueTextView.setText(cropInfo);
+//  }
+//
+//  protected void showCameraResolution(String cameraInfo) {
+////    cameraResolutionTextView.setText(cameraInfo);
+//  }
+//
+//  protected void showRotationInfo(String rotation) {
+////    rotationTextView.setText(rotation);
+//  }
+//
+//  protected void showInference(String inferenceTime) {
+////    inferenceTimeTextView.setText(inferenceTime);
+//  }
 
   protected Model getModel() {
     return model;
@@ -670,9 +670,9 @@ public abstract class CameraActivity extends AppCompatActivity
       LOGGER.d("Updating  device: " + device);
       this.device = device;
       final boolean threadsEnabled = device == Device.CPU;
-      plusImageView.setEnabled(threadsEnabled);
-      minusImageView.setEnabled(threadsEnabled);
-      threadsTextView.setText(threadsEnabled ? String.valueOf(numThreads) : "N/A");
+//      plusImageView.setEnabled(threadsEnabled);
+//      minusImageView.setEnabled(threadsEnabled);
+//      threadsTextView.setText(threadsEnabled ? String.valueOf(numThreads) : "N/A");
       onInferenceConfigurationChanged();
     }
   }
@@ -701,30 +701,30 @@ public abstract class CameraActivity extends AppCompatActivity
 
   @Override
   public void onClick(View v) {
-    if (v.getId() == R.id.plus) {
-      String threads = threadsTextView.getText().toString().trim();
-      int numThreads = Integer.parseInt(threads);
-      if (numThreads >= 9) return;
-      setNumThreads(++numThreads);
-      threadsTextView.setText(String.valueOf(numThreads));
-    } else if (v.getId() == R.id.minus) {
-      String threads = threadsTextView.getText().toString().trim();
-      int numThreads = Integer.parseInt(threads);
-      if (numThreads == 1) {
-        return;
-      }
-      setNumThreads(--numThreads);
-      threadsTextView.setText(String.valueOf(numThreads));
-    }
+//    if (v.getId() == R.id.plus) {
+//      String threads = threadsTextView.getText().toString().trim();
+//      int numThreads = Integer.parseInt(threads);
+//      if (numThreads >= 9) return;
+//      setNumThreads(++numThreads);
+//      threadsTextView.setText(String.valueOf(numThreads));
+//    } else if (v.getId() == R.id.minus) {
+//      String threads = threadsTextView.getText().toString().trim();
+//      int numThreads = Integer.parseInt(threads);
+//      if (numThreads == 1) {
+//        return;
+//      }
+//      setNumThreads(--numThreads);
+//      threadsTextView.setText(String.valueOf(numThreads));
+//    }
   }
 
   @Override
   public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-    if (parent == modelSpinner) {
-      setModel(Model.valueOf(parent.getItemAtPosition(pos).toString().toUpperCase()));
-    } else if (parent == deviceSpinner) {
-      setDevice(Device.valueOf(parent.getItemAtPosition(pos).toString()));
-    }
+//    if (parent == modelSpinner) {
+//      setModel(Model.valueOf(parent.getItemAtPosition(pos).toString().toUpperCase()));
+//    } else if (parent == deviceSpinner) {
+//      setDevice(Device.valueOf(parent.getItemAtPosition(pos).toString()));
+//    }
   }
 
   @Override
