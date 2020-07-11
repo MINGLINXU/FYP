@@ -20,11 +20,21 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Typeface;
 import android.media.ImageReader.OnImageAvailableListener;
+import android.os.Environment;
 import android.os.SystemClock;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.util.Size;
 import android.util.TypedValue;
 import android.widget.Toast;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import org.tensorflow.lite.examples.classification.env.BorderedText;
 import org.tensorflow.lite.examples.classification.env.Logger;
@@ -37,7 +47,7 @@ public class ClassifierActivity extends CameraActivity implements OnImageAvailab
   private static final Size DESIRED_PREVIEW_SIZE = new Size(640, 480);
   private static final float TEXT_SIZE_DIP = 10;
   private Bitmap rgbFrameBitmap = null;
-  private long lastProcessingTimeMs;
+//  private long lastProcessingTimeMs;
   private Integer sensorOrientation;
   private Classifier classifier;
   private BorderedText borderedText;
@@ -83,17 +93,17 @@ public class ClassifierActivity extends CameraActivity implements OnImageAvailab
   @Override
   protected void processImage() {
     rgbFrameBitmap.setPixels(getRgbBytes(), 0, previewWidth, 0, 0, previewWidth, previewHeight);
-    final int cropSize = Math.min(previewWidth, previewHeight);
+//    final int cropSize = Math.min(previewWidth, previewHeight);
 
     runInBackground(
         new Runnable() {
           @Override
           public void run() {
             if (classifier != null) {
-              final long startTime = SystemClock.uptimeMillis();
+//              final long startTime = SystemClock.uptimeMillis();
               final List<Classifier.Recognition> results =
                   classifier.recognizeImage(rgbFrameBitmap, sensorOrientation);
-              lastProcessingTimeMs = SystemClock.uptimeMillis() - startTime;
+//              lastProcessingTimeMs = SystemClock.uptimeMillis() - startTime;
               LOGGER.v("Detect: %s", results);
 
               runOnUiThread(

@@ -653,41 +653,41 @@ public abstract class CameraActivity extends AppCompatActivity
     return model;
   }
 
-  private void setModel(Model model) {
-    if (this.model != model) {
-      LOGGER.d("Updating  model: " + model);
-      this.model = model;
-      onInferenceConfigurationChanged();
-    }
-  }
+//  private void setModel(Model model) {
+//    if (this.model != model) {
+//      LOGGER.d("Updating  model: " + model);
+//      this.model = model;
+//      onInferenceConfigurationChanged();
+//    }
+//  }
 
   protected Device getDevice() {
     return device;
   }
 
-  private void setDevice(Device device) {
-    if (this.device != device) {
-      LOGGER.d("Updating  device: " + device);
-      this.device = device;
-      final boolean threadsEnabled = device == Device.CPU;
+//  private void setDevice(Device device) {
+//    if (this.device != device) {
+//      LOGGER.d("Updating  device: " + device);
+//      this.device = device;
+//      final boolean threadsEnabled = device == Device.CPU;
 //      plusImageView.setEnabled(threadsEnabled);
 //      minusImageView.setEnabled(threadsEnabled);
 //      threadsTextView.setText(threadsEnabled ? String.valueOf(numThreads) : "N/A");
-      onInferenceConfigurationChanged();
-    }
-  }
+//      onInferenceConfigurationChanged();
+//    }
+//  }
 
   protected int getNumThreads() {
     return numThreads;
   }
 
-  private void setNumThreads(int numThreads) {
-    if (this.numThreads != numThreads) {
-      LOGGER.d("Updating  numThreads: " + numThreads);
-      this.numThreads = numThreads;
-      onInferenceConfigurationChanged();
-    }
-  }
+//  private void setNumThreads(int numThreads) {
+//    if (this.numThreads != numThreads) {
+//      LOGGER.d("Updating  numThreads: " + numThreads);
+//      this.numThreads = numThreads;
+//      onInferenceConfigurationChanged();
+//    }
+//  }
 
   protected abstract void processImage();
 
