@@ -24,6 +24,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
@@ -45,6 +46,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.UiThread;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.text.format.DateFormat;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Size;
@@ -76,8 +78,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
+
 import org.tensorflow.lite.examples.classification.env.ImageUtils;
 import org.tensorflow.lite.examples.classification.env.Logger;
 import org.tensorflow.lite.examples.classification.tflite.Classifier.Device;
@@ -133,6 +138,8 @@ public abstract class CameraActivity extends AppCompatActivity
   private Model model = Model.FLOAT_MOBILENET;
   private Device device = Device.CPU;
   private int numThreads = -1;
+
+  private Bitmap rgbFrameBitmap = null;
 
   FirebaseFirestore fbFirestore;
   CollectionReference IdentificationRef;
@@ -245,10 +252,67 @@ public abstract class CameraActivity extends AppCompatActivity
     btn_save.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        sendDataToFireBase();
+//        takeScreenshot();
+
+        Matrix matrix = new Matrix();
+        matrix.postRotate(90);
+        Bitmap scaledBitmap = Bitmap.createScaledBitmap(rgbFrameBitmap, previewWidth, previewHeight, true);
+        Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
+        saveImage(rotatedBitmap);
+
+//        sendDataToFireBase();
       }
     });
 
+  }
+
+  public void saveImage(Bitmap finalBitmap) {
+    File myDir=new File("/sdcard/saved_images");
+    myDir.mkdirs();
+    Random generator = new Random();
+    int n = 10000;
+    n = generator.nextInt(n);
+    Date d = new Date();
+    CharSequence s  = DateFormat.format("MM-dd-yy hh-mm-ss", d.getTime());
+    String fname = "Image-"+ s +".jpg";
+    File file = new File (myDir, fname);
+    if (file.exists ()) file.delete ();
+    try {
+      FileOutputStream out = new FileOutputStream(file);
+      finalBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+      out.flush();
+      out.close();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  private void takeScreenshot() {
+    Date now = new Date();
+    android.text.format.DateFormat.format("yyyy-MM-dd_hh:mm:ss", now);
+
+    try {
+      // image naming and path  to include sd card  appending name you choose for file
+      String mPath = Environment.getExternalStorageDirectory().toString() + "/screenshots" + now + ".jpg";
+
+      // create bitmap screen capture
+
+      View v1 = getWindow().getDecorView().getRootView();
+      v1.setDrawingCacheEnabled(true);
+      Bitmap bitmap = Bitmap.createBitmap(v1.getDrawingCache());
+      v1.setDrawingCacheEnabled(false);
+
+      File imageFile = new File(mPath);
+
+      FileOutputStream outputStream = new FileOutputStream(imageFile);
+      int quality = 100;
+      bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream);
+      outputStream.flush();
+      outputStream.close();
+    } catch (Throwable e) {
+      // Several error may come out with file handling or DOM
+      e.printStackTrace();
+    }
   }
 
   private void sendDataToFireBase() {
@@ -306,6 +370,7 @@ public abstract class CameraActivity extends AppCompatActivity
         previewWidth = previewSize.width;
         rgbBytes = new int[previewWidth * previewHeight];
         onPreviewSizeChosen(new Size(previewSize.width, previewSize.height), 90);
+        rgbFrameBitmap = getBitmap();
       }
     } catch (final Exception e) {
       LOGGER.e(e, "Exception!");
@@ -690,6 +755,8 @@ public abstract class CameraActivity extends AppCompatActivity
 //  }
 
   protected abstract void processImage();
+
+  protected abstract Bitmap getBitmap();
 
   protected abstract void onPreviewSizeChosen(final Size size, final int rotation);
 

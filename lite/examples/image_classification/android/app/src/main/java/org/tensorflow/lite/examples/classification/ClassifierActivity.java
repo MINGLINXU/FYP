@@ -36,6 +36,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -71,6 +72,11 @@ public class ClassifierActivity extends CameraActivity implements OnImageAvailab
   }
 
   @Override
+  protected Bitmap getBitmap() {
+    return rgbFrameBitmap;
+  }
+
+  @Override
   public void onPreviewSizeChosen(final Size size, final int rotation) {
     final float textSizePx =
         TypedValue.applyDimension(
@@ -97,12 +103,6 @@ public class ClassifierActivity extends CameraActivity implements OnImageAvailab
   @Override
   protected void processImage() {
     rgbFrameBitmap.setPixels(getRgbBytes(), 0, previewWidth, 0, 0, previewWidth, previewHeight);
-    Matrix matrix = new Matrix();
-    matrix.postRotate(90);
-    Bitmap scaledBitmap = Bitmap.createScaledBitmap(rgbFrameBitmap, previewWidth, previewHeight, true);
-    Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
-    saveImage(rotatedBitmap);
-//    final int cropSize = Math.min(previewWidth, previewHeight);
 
     runInBackground(
         new Runnable() {
@@ -125,6 +125,7 @@ public class ClassifierActivity extends CameraActivity implements OnImageAvailab
 //                      showCameraResolution(cropSize + "x" + cropSize);
 //                      showRotationInfo(String.valueOf(sensorOrientation));
 //                      showInference(lastProcessingTimeMs + "ms");
+
                     }
                   });
             }
@@ -143,29 +144,6 @@ public class ClassifierActivity extends CameraActivity implements OnImageAvailab
     final Model model = getModel();
     final int numThreads = getNumThreads();
     runInBackground(() -> recreateClassifier(model, device, numThreads));
-  }
-
-  public void saveImage(Bitmap finalBitmap) {
-    File myDir=new File("/sdcard/saved_images");
-    myDir.mkdirs();
-    Random generator = new Random();
-    int n = 10000;
-    n = generator.nextInt(n);
-    Date d = new Date();
-    CharSequence s  = DateFormat.format("MM-dd-yy hh-mm-ss", d.getTime());
-    String fname = "Image-"+ s +".jpg";
-    File file = new File (myDir, fname);
-    if (file.exists ()) file.delete ();
-    try {
-      FileOutputStream out = new FileOutputStream(file);
-      finalBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
-      out.flush();
-      out.close();
-      Log.d("Trigger", "Success?");
-    } catch (Exception e) {
-      e.printStackTrace();
-      Log.d("Trigger", "Complete and Utter Failure");
-    }
   }
 
   private void recreateClassifier(Model model, Device device, int numThreads) {
