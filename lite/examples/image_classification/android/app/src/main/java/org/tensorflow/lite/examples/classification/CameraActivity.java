@@ -36,6 +36,7 @@ import android.media.Image;
 import android.media.Image.Plane;
 import android.media.ImageReader;
 import android.media.ImageReader.OnImageAvailableListener;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -65,13 +66,16 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -252,13 +256,13 @@ public abstract class CameraActivity extends AppCompatActivity
     btn_save.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-//        takeScreenshot();
-
         Matrix matrix = new Matrix();
         matrix.postRotate(90);
         Bitmap scaledBitmap = Bitmap.createScaledBitmap(rgbFrameBitmap, previewWidth, previewHeight, true);
         Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
-        saveImage(rotatedBitmap);
+//        saveImage(rotatedBitmap);
+
+          uploadImage(rotatedBitmap);
 
 //        sendDataToFireBase();
       }
@@ -266,7 +270,38 @@ public abstract class CameraActivity extends AppCompatActivity
 
   }
 
-  public void saveImage(Bitmap finalBitmap) {
+    private void uploadImage(Bitmap bitmap) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] data = baos.toByteArray();
+
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReferenceFromUrl("gs://fyp-plant-disease-detection.appspot.com");
+        Random generator = new Random();
+        int n = 10000;
+        n = generator.nextInt(n);
+        Date d = new Date();
+        CharSequence s  = DateFormat.format("MM-dd-yy hh-mm-ss", d.getTime());
+        StorageReference imagesRef = storageRef.child("images/" + s);
+
+        UploadTask uploadTask = imagesRef.putBytes(data);
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle unsuccessful uploads
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                Task<Uri> downloadUrl = taskSnapshot.getMetadata().getReference().getDownloadUrl();
+                Log.d("testing url", downloadUrl+"");
+                // Do what you want
+            }
+        });
+    }
+
+    public void saveImage(Bitmap finalBitmap) {
     File myDir=new File("/sdcard/saved_images");
     myDir.mkdirs();
     Random generator = new Random();
@@ -287,33 +322,7 @@ public abstract class CameraActivity extends AppCompatActivity
     }
   }
 
-  private void takeScreenshot() {
-    Date now = new Date();
-    android.text.format.DateFormat.format("yyyy-MM-dd_hh:mm:ss", now);
 
-    try {
-      // image naming and path  to include sd card  appending name you choose for file
-      String mPath = Environment.getExternalStorageDirectory().toString() + "/screenshots" + now + ".jpg";
-
-      // create bitmap screen capture
-
-      View v1 = getWindow().getDecorView().getRootView();
-      v1.setDrawingCacheEnabled(true);
-      Bitmap bitmap = Bitmap.createBitmap(v1.getDrawingCache());
-      v1.setDrawingCacheEnabled(false);
-
-      File imageFile = new File(mPath);
-
-      FileOutputStream outputStream = new FileOutputStream(imageFile);
-      int quality = 100;
-      bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream);
-      outputStream.flush();
-      outputStream.close();
-    } catch (Throwable e) {
-      // Several error may come out with file handling or DOM
-      e.printStackTrace();
-    }
-  }
 
   private void sendDataToFireBase() {
     String percent = recognitionValueTextView.getText().toString();
