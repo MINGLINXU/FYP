@@ -4,22 +4,27 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 
@@ -29,6 +34,7 @@ public class IdentificationDetailsActivity extends AppCompatActivity {
     RadioButton rb;
     Button btnUpdate;
     Spinner spinner;
+    ImageView ivImage;
 
     String text;
 
@@ -45,11 +51,11 @@ public class IdentificationDetailsActivity extends AppCompatActivity {
 
         rg = findViewById(R.id.rg);
 
-
         btnUpdate = findViewById(R.id.btn_Update);
         spinner = findViewById(R.id.spinner);
         spinner.setVisibility(View.INVISIBLE);
         tvTitle = findViewById(R.id.tv_identified);
+        ivImage = findViewById(R.id.iv_Image);
 
         fbFirestore = FirebaseFirestore.getInstance();
         fbStorage = FirebaseStorage.getInstance();
@@ -62,6 +68,12 @@ public class IdentificationDetailsActivity extends AppCompatActivity {
 
         btnUpdate.setEnabled(false);
 
+//        StorageReference storageRef = fbStorage.getReferenceFromUrl("gs://fyp-plant-disease-detection.appspot.com");
+//        StorageReference imagesRef = storageRef.child("images/07-19-20 06-47-27.jpg");
+
+//        Glide.with(this)
+//                .load(uriTest)
+//                .into(ivImage);
 
         rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
         {
@@ -100,7 +112,7 @@ public class IdentificationDetailsActivity extends AppCompatActivity {
 
         if(text.equals("Correct")){
             String disease = ids.getdiseaseName();
-            Identified identified = new Identified(ids.getdiseaseName(), disease);
+            Identified identified = new Identified(ids.getdiseaseName(), disease, ids.getImage());
             IdentifiedRef.add(identified)
                     .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                         @Override
@@ -138,7 +150,7 @@ public class IdentificationDetailsActivity extends AppCompatActivity {
                     });
         }else {
             String disease = spinner.getSelectedItem().toString();;
-            Identified identified = new Identified(ids.getdiseaseName(), disease);
+            Identified identified = new Identified(ids.getdiseaseName(), disease, ids.getImage());
             IdentifiedRef.add(identified)
                     .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                         @Override

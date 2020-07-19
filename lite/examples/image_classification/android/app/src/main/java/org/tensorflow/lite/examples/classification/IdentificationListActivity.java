@@ -80,8 +80,9 @@ public class IdentificationListActivity extends Fragment {
                 Double percentage = documentSnapshot.getDouble("percentage");
                 String strPercentage = percentage + "";
                 Float fltPercentage = Float.parseFloat(strPercentage);
+                String image = documentSnapshot.getString("image");
 
-                identificationList.add(new Identification(diseaseName,fltPercentage));
+                identificationList.add(new Identification(diseaseName,fltPercentage, image));
                 Log.d("Loop List size: ",identificationList.size() + "");
                 lv.setAdapter(identificationAdapter);
                 Toast.makeText(getActivity(), diseaseName + fltPercentage, Toast.LENGTH_SHORT).show();

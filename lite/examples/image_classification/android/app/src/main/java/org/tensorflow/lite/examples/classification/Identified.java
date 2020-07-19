@@ -6,10 +6,12 @@ public class Identified {
 
     private String oldDiseaseName;
     private String newDiseaseName;
+    private String image;
 
-    public Identified(String oldDiseaseName, String newDiseaseName) {
+    public Identified(String oldDiseaseName, String newDiseaseName, String image) {
         this.oldDiseaseName = oldDiseaseName;
         this.newDiseaseName = newDiseaseName;
+        this.image = image;
     }
 
     public String getOldDiseaseName() {
@@ -27,4 +29,6 @@ public class Identified {
     public void setNewDiseaseName(String newDiseaseName) {
         this.newDiseaseName = newDiseaseName;
     }
+
+    public String getImage() { return image; }
 }

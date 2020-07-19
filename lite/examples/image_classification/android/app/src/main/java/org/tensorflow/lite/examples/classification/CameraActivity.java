@@ -263,8 +263,7 @@ public abstract class CameraActivity extends AppCompatActivity
 //        saveImage(rotatedBitmap);
 
           uploadImage(rotatedBitmap);
-
-//        sendDataToFireBase();
+          sendDataToFireBase();
       }
     });
 
@@ -275,11 +274,7 @@ public abstract class CameraActivity extends AppCompatActivity
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
         byte[] data = baos.toByteArray();
 
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageRef = storage.getReferenceFromUrl("gs://fyp-plant-disease-detection.appspot.com");
-        Random generator = new Random();
-        int n = 10000;
-        n = generator.nextInt(n);
+        StorageReference storageRef = fbStorage.getReferenceFromUrl("gs://fyp-plant-disease-detection.appspot.com");
         Date d = new Date();
         CharSequence s  = DateFormat.format("MM-dd-yy hh-mm-ss", d.getTime());
         StorageReference imagesRef = storageRef.child("images/" + s);
@@ -304,9 +299,6 @@ public abstract class CameraActivity extends AppCompatActivity
     public void saveImage(Bitmap finalBitmap) {
     File myDir=new File("/sdcard/saved_images");
     myDir.mkdirs();
-    Random generator = new Random();
-    int n = 10000;
-    n = generator.nextInt(n);
     Date d = new Date();
     CharSequence s  = DateFormat.format("MM-dd-yy hh-mm-ss", d.getTime());
     String fname = "Image-"+ s +".jpg";
@@ -331,7 +323,11 @@ public abstract class CameraActivity extends AppCompatActivity
       StringBuffer number = new StringBuffer(percent).deleteCharAt(percent.length() - 1);
       float percentageFloat = Float.valueOf(String.valueOf(number));
 
-    Identification identification = new Identification(recognitionTextView.getText().toString(), percentageFloat);
+      Date d = new Date();
+      CharSequence s  = DateFormat.format("MM-dd-yy hh-mm-ss", d.getTime());
+      String fname = "images/"+ s +".jpg";
+
+    Identification identification = new Identification(recognitionTextView.getText().toString(), percentageFloat, fname);
 
     IdentificationRef.add(identification)
             .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
