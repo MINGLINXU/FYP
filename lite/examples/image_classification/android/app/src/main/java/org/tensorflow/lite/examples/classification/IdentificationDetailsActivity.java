@@ -16,8 +16,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
@@ -25,6 +23,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -55,7 +54,7 @@ public class IdentificationDetailsActivity extends AppCompatActivity {
         spinner = findViewById(R.id.spinner);
         spinner.setVisibility(View.INVISIBLE);
         tvTitle = findViewById(R.id.tv_identified);
-        ivImage = findViewById(R.id.iv_Image);
+        ivImage = findViewById(R.id.iv_photo);
 
         fbFirestore = FirebaseFirestore.getInstance();
         fbStorage = FirebaseStorage.getInstance();
@@ -68,12 +67,8 @@ public class IdentificationDetailsActivity extends AppCompatActivity {
 
         btnUpdate.setEnabled(false);
 
-//        StorageReference storageRef = fbStorage.getReferenceFromUrl("gs://fyp-plant-disease-detection.appspot.com");
-//        StorageReference imagesRef = storageRef.child("images/07-19-20 06-47-27.jpg");
-
-//        Glide.with(this)
-//                .load(uriTest)
-//                .into(ivImage);
+        Log.d("checkingImage", ids.getImage()+"");
+        Picasso.get().load(ids.getImage()).into(ivImage);
 
         rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
         {

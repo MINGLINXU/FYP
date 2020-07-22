@@ -64,6 +64,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -148,6 +149,7 @@ public abstract class CameraActivity extends AppCompatActivity
   FirebaseFirestore fbFirestore;
   CollectionReference IdentificationRef;
   FirebaseStorage fbStorage;
+  String downloadUrl;
 
   @Override
   protected void onCreate(final Bundle savedInstanceState) {
@@ -263,7 +265,7 @@ public abstract class CameraActivity extends AppCompatActivity
 //        saveImage(rotatedBitmap);
 
           uploadImage(rotatedBitmap);
-          sendDataToFireBase();
+
       }
     });
 
@@ -289,8 +291,14 @@ public abstract class CameraActivity extends AppCompatActivity
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
-                Task<Uri> downloadUrl = taskSnapshot.getMetadata().getReference().getDownloadUrl();
-                Log.d("testing url", downloadUrl+"");
+                taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                  @Override
+                  public void onSuccess(Uri uri) {
+                    downloadUrl = uri.toString();
+                    Log.d("testing url", downloadUrl+"");
+                    sendDataToFireBase();
+                  }
+                });
                 // Do what you want
             }
         });
@@ -327,7 +335,7 @@ public abstract class CameraActivity extends AppCompatActivity
       CharSequence s  = DateFormat.format("MM-dd-yy hh-mm-ss", d.getTime());
       String fname = "images/"+ s +".jpg";
 
-    Identification identification = new Identification(recognitionTextView.getText().toString(), percentageFloat, fname);
+    Identification identification = new Identification(recognitionTextView.getText().toString(), percentageFloat, downloadUrl.toString());
 
     IdentificationRef.add(identification)
             .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {

@@ -1,8 +1,10 @@
 package org.tensorflow.lite.examples.classification;
 
+import android.media.Image;
+
 import java.io.Serializable;
 
-public class Identified {
+public class Identified implements Serializable{
 
     private String oldDiseaseName;
     private String newDiseaseName;

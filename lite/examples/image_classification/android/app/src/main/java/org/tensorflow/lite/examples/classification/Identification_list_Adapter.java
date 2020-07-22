@@ -1,6 +1,7 @@
 package org.tensorflow.lite.examples.classification;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -50,6 +52,9 @@ public class Identification_list_Adapter extends ArrayAdapter<Identification> {
 
         tvName.setText(currentItem.getdiseaseName());
         tv_percentage.setText(currentItem.getPercentage().toString() + "%");
+
+        Log.d("checkingImage", currentItem.getImage()+"");
+        Picasso.get().load(currentItem.getImage()).into(ivImage);
 
 
 

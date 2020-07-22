@@ -96,8 +96,8 @@ public class IdentificationListActivity extends Fragment {
     public void onStart() {
         db = FirebaseFirestore.getInstance();
         identificationAdapter = new Identification_list_Adapter(getContext(),R.layout.identification_row,identificationList);
-//        identificationList.clear();
-//        identificationIDList.clear();
+        identificationList.clear();
+        identificationIDList.clear();
 
 
 
