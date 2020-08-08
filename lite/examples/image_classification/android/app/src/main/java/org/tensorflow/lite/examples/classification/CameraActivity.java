@@ -19,7 +19,9 @@ package org.tensorflow.lite.examples.classification;
 import android.Manifest;
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -90,14 +92,13 @@ import java.util.Random;
 
 import org.tensorflow.lite.examples.classification.env.ImageUtils;
 import org.tensorflow.lite.examples.classification.env.Logger;
+import org.tensorflow.lite.examples.classification.tflite.Classifier;
 import org.tensorflow.lite.examples.classification.tflite.Classifier.Device;
 import org.tensorflow.lite.examples.classification.tflite.Classifier.Model;
 import org.tensorflow.lite.examples.classification.tflite.Classifier.Recognition;
 
-
-//hello testing update
 public abstract class CameraActivity extends AppCompatActivity
-    implements OnImageAvailableListener,
+        implements OnImageAvailableListener,
         Camera.PreviewCallback,
         View.OnClickListener,
         AdapterView.OnItemSelectedListener {
@@ -123,18 +124,18 @@ public abstract class CameraActivity extends AppCompatActivity
   private LinearLayout gestureLayout;
   private BottomSheetBehavior<LinearLayout> sheetBehavior;
   protected TextView recognitionTextView,
-      recognition1TextView,
-      recognition2TextView,
-      recognitionValueTextView,
-      recognition1ValueTextView,
-      recognition2ValueTextView;
-//  protected TextView frameValueTextView,
+          recognition1TextView,
+          recognition2TextView,
+          recognitionValueTextView,
+          recognition1ValueTextView,
+          recognition2ValueTextView;
+  //  protected TextView frameValueTextView,
 //      cropValueTextView;
 //      cameraResolutionTextView,
 //      rotationTextView,
 //      inferenceTimeTextView;
   protected ImageView bottomSheetArrowImageView;
-//  private ImageView plusImageView, minusImageView;
+  //  private ImageView plusImageView, minusImageView;
 //  private Spinner modelSpinner;
 //  private Spinner deviceSpinner;
 //  private TextView threadsTextView;
@@ -150,6 +151,7 @@ public abstract class CameraActivity extends AppCompatActivity
   CollectionReference IdentificationRef;
   FirebaseStorage fbStorage;
   String downloadUrl;
+
 
   @Override
   protected void onCreate(final Bundle savedInstanceState) {
@@ -187,50 +189,50 @@ public abstract class CameraActivity extends AppCompatActivity
 
     ViewTreeObserver vto = gestureLayout.getViewTreeObserver();
     vto.addOnGlobalLayoutListener(
-        new ViewTreeObserver.OnGlobalLayoutListener() {
-          @Override
-          public void onGlobalLayout() {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-              gestureLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-            } else {
-              gestureLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-            }
-            //                int width = bottomSheetLayout.getMeasuredWidth();
-            int height = gestureLayout.getMeasuredHeight();
+            new ViewTreeObserver.OnGlobalLayoutListener() {
+              @Override
+              public void onGlobalLayout() {
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                  gestureLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                } else {
+                  gestureLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                }
+                //                int width = bottomSheetLayout.getMeasuredWidth();
+                int height = gestureLayout.getMeasuredHeight();
 
-            sheetBehavior.setPeekHeight(height);
-          }
-        });
+                sheetBehavior.setPeekHeight(height);
+              }
+            });
     sheetBehavior.setHideable(false);
 
     sheetBehavior.setBottomSheetCallback(
-        new BottomSheetBehavior.BottomSheetCallback() {
-          @Override
-          public void onStateChanged(@NonNull View bottomSheet, int newState) {
-            switch (newState) {
-              case BottomSheetBehavior.STATE_HIDDEN:
-                break;
-              case BottomSheetBehavior.STATE_EXPANDED:
-                {
-                  bottomSheetArrowImageView.setImageResource(R.drawable.icn_chevron_down);
+            new BottomSheetBehavior.BottomSheetCallback() {
+              @Override
+              public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                switch (newState) {
+                  case BottomSheetBehavior.STATE_HIDDEN:
+                    break;
+                  case BottomSheetBehavior.STATE_EXPANDED:
+                  {
+                    bottomSheetArrowImageView.setImageResource(R.drawable.icn_chevron_down);
+                  }
+                  break;
+                  case BottomSheetBehavior.STATE_COLLAPSED:
+                  {
+                    bottomSheetArrowImageView.setImageResource(R.drawable.icn_chevron_up);
+                  }
+                  break;
+                  case BottomSheetBehavior.STATE_DRAGGING:
+                    break;
+                  case BottomSheetBehavior.STATE_SETTLING:
+                    bottomSheetArrowImageView.setImageResource(R.drawable.icn_chevron_up);
+                    break;
                 }
-                break;
-              case BottomSheetBehavior.STATE_COLLAPSED:
-                {
-                  bottomSheetArrowImageView.setImageResource(R.drawable.icn_chevron_up);
-                }
-                break;
-              case BottomSheetBehavior.STATE_DRAGGING:
-                break;
-              case BottomSheetBehavior.STATE_SETTLING:
-                bottomSheetArrowImageView.setImageResource(R.drawable.icn_chevron_up);
-                break;
-            }
-          }
+              }
 
-          @Override
-          public void onSlide(@NonNull View bottomSheet, float slideOffset) {}
-        });
+              @Override
+              public void onSlide(@NonNull View bottomSheet, float slideOffset) {}
+            });
 
     recognitionTextView = findViewById(R.id.detected_item);
     recognitionValueTextView = findViewById(R.id.detected_item_value);
@@ -264,47 +266,49 @@ public abstract class CameraActivity extends AppCompatActivity
         Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
 //        saveImage(rotatedBitmap);
 
-          uploadImage(rotatedBitmap);
-
+        uploadImage(rotatedBitmap);
       }
     });
 
   }
 
-    private void uploadImage(Bitmap bitmap) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        byte[] data = baos.toByteArray();
+  private void uploadImage(Bitmap bitmap) {
 
-        StorageReference storageRef = fbStorage.getReferenceFromUrl("gs://fyp-plant-disease-detection.appspot.com");
-        Date d = new Date();
-        CharSequence s  = DateFormat.format("MM-dd-yy hh-mm-ss", d.getTime());
-        StorageReference imagesRef = storageRef.child("images/" + s);
 
-        UploadTask uploadTask = imagesRef.putBytes(data);
-        uploadTask.addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                // Handle unsuccessful uploads
-            }
-        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
-                taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                  @Override
-                  public void onSuccess(Uri uri) {
-                    downloadUrl = uri.toString();
-                    Log.d("testing url", downloadUrl+"");
-                    sendDataToFireBase();
-                  }
-                });
-                // Do what you want
-            }
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+    byte[] data = baos.toByteArray();
+
+    StorageReference storageRef = fbStorage.getReferenceFromUrl("gs://fyp-plant-disease-detection.appspot.com");
+    Date d = new Date();
+    CharSequence s  = DateFormat.format("MM-dd-yy hh-mm-ss", d.getTime());
+    StorageReference imagesRef = storageRef.child("images/" + s);
+
+    UploadTask uploadTask = imagesRef.putBytes(data);
+    uploadTask.addOnFailureListener(new OnFailureListener() {
+      @Override
+      public void onFailure(@NonNull Exception exception) {
+        // Handle unsuccessful uploads
+      }
+    }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+      @Override
+      public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+        // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+        taskSnapshot.getStorage().getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+          @Override
+          public void onSuccess(Uri uri) {
+            downloadUrl = uri.toString();
+            Log.d("testing url", downloadUrl+"");
+            sendDataToFireBase();
+
+          }
         });
-    }
+        // Do what you want
+      }
+    });
+  }
 
-    public void saveImage(Bitmap finalBitmap) {
+  public void saveImage(Bitmap finalBitmap) {
     File myDir=new File("/sdcard/saved_images");
     myDir.mkdirs();
     Date d = new Date();
@@ -326,6 +330,12 @@ public abstract class CameraActivity extends AppCompatActivity
 
   private void sendDataToFireBase() {
     String percent = recognitionValueTextView.getText().toString();
+    String percent1 = recognition1ValueTextView.getText().toString();
+    String percent2 = recognition2TextView.getText().toString();
+
+    String name = recognitionTextView.getText().toString();
+    String name1 = recognition1TextView.getText().toString();
+    String name2 = recognition2TextView.getText().toString();
 
     if (percent.endsWith("%")) {
       StringBuffer number = new StringBuffer(percent).deleteCharAt(percent.length() - 1);
@@ -335,22 +345,34 @@ public abstract class CameraActivity extends AppCompatActivity
       CharSequence s  = DateFormat.format("MM-dd-yy hh-mm-ss", d.getTime());
       String fname = "images/"+ s +".jpg";
 
-    Identification identification = new Identification(recognitionTextView.getText().toString(), percentageFloat, downloadUrl.toString());
+      Identification identification = new Identification(recognitionTextView.getText().toString(), percentageFloat, downloadUrl.toString());
 
-    IdentificationRef.add(identification)
-            .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-              @Override
-              public void onSuccess(DocumentReference documentReference) {
-                Toast.makeText(CameraActivity.this, "Added Successfully", Toast.LENGTH_SHORT).show();
-              }
-            })
-            .addOnFailureListener(new OnFailureListener() {
-              @Override
-              public void onFailure(@NonNull Exception e) {
-                Toast.makeText(CameraActivity.this, "Error!", Toast.LENGTH_SHORT).show();
-                Log.d(TAG, e.toString());
-              }
-            });
+      IdentificationRef.add(identification)
+              .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                @Override
+                public void onSuccess(DocumentReference documentReference) {
+                  Toast.makeText(CameraActivity.this, "Added Successfully", Toast.LENGTH_SHORT).show();
+                  Intent i = new Intent(CameraActivity.this,IdentifiedActivity.class);
+                  i.putExtra("Image",downloadUrl);
+                  i.putExtra("Confidence",percent);
+                  i.putExtra("Confidence1",percent1);
+                  i.putExtra("Confidence2",percent1);
+                  i.putExtra("Name",name);
+                  i.putExtra("Name1",name1);
+                  i.putExtra("Name2",name2);
+
+                  startActivity(i);
+
+                }
+              })
+              .addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                  Toast.makeText(CameraActivity.this, "Error!", Toast.LENGTH_SHORT).show();
+                  Log.d(TAG, e.toString());
+
+                }
+              });
     }
   }
 
@@ -395,21 +417,21 @@ public abstract class CameraActivity extends AppCompatActivity
     yRowStride = previewWidth;
 
     imageConverter =
-        new Runnable() {
-          @Override
-          public void run() {
-            ImageUtils.convertYUV420SPToARGB8888(bytes, previewWidth, previewHeight, rgbBytes);
-          }
-        };
+            new Runnable() {
+              @Override
+              public void run() {
+                ImageUtils.convertYUV420SPToARGB8888(bytes, previewWidth, previewHeight, rgbBytes);
+              }
+            };
 
     postInferenceCallback =
-        new Runnable() {
-          @Override
-          public void run() {
-            camera.addCallbackBuffer(bytes);
-            isProcessingFrame = false;
-          }
-        };
+            new Runnable() {
+              @Override
+              public void run() {
+                camera.addCallbackBuffer(bytes);
+                isProcessingFrame = false;
+              }
+            };
     processImage();
   }
 
@@ -443,30 +465,30 @@ public abstract class CameraActivity extends AppCompatActivity
       final int uvPixelStride = planes[1].getPixelStride();
 
       imageConverter =
-          new Runnable() {
-            @Override
-            public void run() {
-              ImageUtils.convertYUV420ToARGB8888(
-                  yuvBytes[0],
-                  yuvBytes[1],
-                  yuvBytes[2],
-                  previewWidth,
-                  previewHeight,
-                  yRowStride,
-                  uvRowStride,
-                  uvPixelStride,
-                  rgbBytes);
-            }
-          };
+              new Runnable() {
+                @Override
+                public void run() {
+                  ImageUtils.convertYUV420ToARGB8888(
+                          yuvBytes[0],
+                          yuvBytes[1],
+                          yuvBytes[2],
+                          previewWidth,
+                          previewHeight,
+                          yRowStride,
+                          uvRowStride,
+                          uvPixelStride,
+                          rgbBytes);
+                }
+              };
 
       postInferenceCallback =
-          new Runnable() {
-            @Override
-            public void run() {
-              image.close();
-              isProcessingFrame = false;
-            }
-          };
+              new Runnable() {
+                @Override
+                public void run() {
+                  image.close();
+                  isProcessingFrame = false;
+                }
+              };
 
       processImage();
     } catch (final Exception e) {
@@ -529,7 +551,7 @@ public abstract class CameraActivity extends AppCompatActivity
 
   @Override
   public void onRequestPermissionsResult(
-      final int requestCode, final String[] permissions, final int[] grantResults) {
+          final int requestCode, final String[] permissions, final int[] grantResults) {
     super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     if (requestCode == PERMISSIONS_REQUEST) {
       if (allPermissionsGranted(grantResults)) {
@@ -564,7 +586,7 @@ public abstract class CameraActivity extends AppCompatActivity
                 CameraActivity.this,
                 "Camera permission is required for this demo",
                 Toast.LENGTH_LONG)
-            .show();
+                .show();
       }
       requestPermissions(new String[] {PERMISSION_CAMERA}, PERMISSIONS_REQUEST);
     }
@@ -572,7 +594,7 @@ public abstract class CameraActivity extends AppCompatActivity
 
   // Returns true if the device supports the required hardware level, or better.
   private boolean isHardwareLevelSupported(
-      CameraCharacteristics characteristics, int requiredLevel) {
+          CameraCharacteristics characteristics, int requiredLevel) {
     int deviceLevel = characteristics.get(CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL);
     if (deviceLevel == CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_LEGACY) {
       return requiredLevel == deviceLevel;
@@ -594,7 +616,7 @@ public abstract class CameraActivity extends AppCompatActivity
         }
 
         final StreamConfigurationMap map =
-            characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
+                characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
 
         if (map == null) {
           continue;
@@ -604,9 +626,9 @@ public abstract class CameraActivity extends AppCompatActivity
         // This should help with legacy situations where using the camera2 API causes
         // distorted or otherwise broken previews.
         useCamera2API =
-            (facing == CameraCharacteristics.LENS_FACING_EXTERNAL)
-                || isHardwareLevelSupported(
-                    characteristics, CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_FULL);
+                (facing == CameraCharacteristics.LENS_FACING_EXTERNAL)
+                        || isHardwareLevelSupported(
+                        characteristics, CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_FULL);
         LOGGER.i("Camera API lv2?: %s", useCamera2API);
         return cameraId;
       }
@@ -623,24 +645,24 @@ public abstract class CameraActivity extends AppCompatActivity
     Fragment fragment;
     if (useCamera2API) {
       CameraConnectionFragment camera2Fragment =
-          CameraConnectionFragment.newInstance(
-              new CameraConnectionFragment.ConnectionCallback() {
-                @Override
-                public void onPreviewSizeChosen(final Size size, final int rotation) {
-                  previewHeight = size.getHeight();
-                  previewWidth = size.getWidth();
-                  CameraActivity.this.onPreviewSizeChosen(size, rotation);
-                }
-              },
-              this,
-              getLayoutId(),
-              getDesiredPreviewFrameSize());
+              CameraConnectionFragment.newInstance(
+                      new CameraConnectionFragment.ConnectionCallback() {
+                        @Override
+                        public void onPreviewSizeChosen(final Size size, final int rotation) {
+                          previewHeight = size.getHeight();
+                          previewWidth = size.getWidth();
+                          CameraActivity.this.onPreviewSizeChosen(size, rotation);
+                        }
+                      },
+                      this,
+                      getLayoutId(),
+                      getDesiredPreviewFrameSize());
 
       camera2Fragment.setCamera(cameraId);
       fragment = camera2Fragment;
     } else {
       fragment =
-          new LegacyCameraConnectionFragment(this, getLayoutId(), getDesiredPreviewFrameSize());
+              new LegacyCameraConnectionFragment(this, getLayoutId(), getDesiredPreviewFrameSize());
     }
 
     getFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
@@ -686,7 +708,7 @@ public abstract class CameraActivity extends AppCompatActivity
         if (recognition.getTitle() != null) recognitionTextView.setText(recognition.getTitle());
         if (recognition.getConfidence() != null)
           recognitionValueTextView.setText(
-              String.format("%.2f", (100 * recognition.getConfidence())) + "%");
+                  String.format("%.2f", (100 * recognition.getConfidence())) + "%");
       }
 
       Recognition recognition1 = results.get(1);
@@ -694,7 +716,7 @@ public abstract class CameraActivity extends AppCompatActivity
         if (recognition1.getTitle() != null) recognition1TextView.setText(recognition1.getTitle());
         if (recognition1.getConfidence() != null)
           recognition1ValueTextView.setText(
-              String.format("%.2f", (100 * recognition1.getConfidence())) + "%");
+                  String.format("%.2f", (100 * recognition1.getConfidence())) + "%");
       }
 
       Recognition recognition2 = results.get(2);
@@ -702,7 +724,7 @@ public abstract class CameraActivity extends AppCompatActivity
         if (recognition2.getTitle() != null) recognition2TextView.setText(recognition2.getTitle());
         if (recognition2.getConfidence() != null)
           recognition2ValueTextView.setText(
-              String.format("%.2f", (100 * recognition2.getConfidence())) + "%");
+                  String.format("%.2f", (100 * recognition2.getConfidence())) + "%");
       }
     }
   }
