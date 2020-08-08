@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -31,6 +32,7 @@ public class IdentificationListActivity extends Fragment {
     ListView lv;
     Identification_list_Adapter identificationAdapter;
     ArrayList<Identification> identificationList = new ArrayList<Identification>();
+    Button btnLogout;
 
     ArrayList<String> identificationIDList = new ArrayList<>();
 
@@ -44,6 +46,7 @@ public class IdentificationListActivity extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
     }
 
     @Override
@@ -51,6 +54,7 @@ public class IdentificationListActivity extends Fragment {
                              Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.activity_identification_list, container,false);
         lv = view.findViewById(R.id.lv_identification);
+        btnLogout = view.findViewById(R.id.btn_logout);
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -67,7 +71,19 @@ public class IdentificationListActivity extends Fragment {
             }
         });
 
+        btnLogout.setOnClickListener(new AdapterView.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), LoginActivity.class);
+                startActivity(intent);
+            }
+        });
+
+
+
         return view;
+
     }
 
     private void RetrieveData(String identification) {

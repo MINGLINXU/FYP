@@ -21,7 +21,7 @@
 
         <TextView
             android:id="@+id/tv_identification"
-            android:layout_width="wrap_content"
+            android:layout_width="262dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="1"
@@ -30,11 +30,20 @@
             android:textAlignment="center"
             android:textSize="36sp"
             android:textStyle="bold|italic" />
+
+        <Button
+            android:id="@+id/btn_logout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:text="Logout" />
     </LinearLayout>
 
     <ListView
         android:id="@+id/lv_identification"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:background="#FFFFFF" />
 
 </LinearLayout>

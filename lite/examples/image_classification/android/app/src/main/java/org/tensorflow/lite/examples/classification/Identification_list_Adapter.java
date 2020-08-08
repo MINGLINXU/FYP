@@ -1,6 +1,8 @@
 package org.tensorflow.lite.examples.classification;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,6 +54,7 @@ public class Identification_list_Adapter extends ArrayAdapter<Identification> {
 
         tvName.setText(currentItem.getdiseaseName());
         tv_percentage.setText(currentItem.getPercentage().toString() + "%");
+
 
         Log.d("checkingImage", currentItem.getImage()+"");
         Picasso.get().load(currentItem.getImage()).into(ivImage);
