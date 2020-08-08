@@ -201,14 +201,14 @@ public class DashboardActivity extends Fragment {
                 }
 
                 Toast.makeText(getContext(), "Download Completed", Toast.LENGTH_SHORT).show();
-                Toast.makeText(getContext(), "Internal storage/MADBO/Nature.jpg", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), "Internal storage/MADBO/Nature.jpg", Toast.LENGTH_SHORT).show();
 
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
                 Log.e("firebase ", ";local tem file not created  created " + exception.toString());
-                Toast.makeText(getContext(), "Download Incompleted", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), "Download Incompleted", Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -2,9 +2,11 @@ package org.tensorflow.lite.examples.classification;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,6 +20,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -71,12 +74,30 @@ public class IdentificationListActivity extends Fragment {
             }
         });
 
-        btnLogout.setOnClickListener(new AdapterView.OnClickListener(){
-
+        btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), LoginActivity.class);
-                startActivity(intent);
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
+                alertDialogBuilder
+                        .setMessage("Are You Sure You Want To Logout?")
+                        .setCancelable(false)
+                        .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                FirebaseAuth.getInstance().signOut();
+                                startActivity(new Intent(getContext(), LoginActivity.class));
+                                getActivity().finish();
+                            }
+                        })
+                        .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+
+
+                            }
+                        });
+                alertDialogBuilder.show();
             }
         });
 
@@ -101,7 +122,6 @@ public class IdentificationListActivity extends Fragment {
                 identificationList.add(new Identification(diseaseName,fltPercentage, image));
                 Log.d("Loop List size: ",identificationList.size() + "");
                 lv.setAdapter(identificationAdapter);
-                Toast.makeText(getActivity(), diseaseName + fltPercentage, Toast.LENGTH_SHORT).show();
 
             }
         });

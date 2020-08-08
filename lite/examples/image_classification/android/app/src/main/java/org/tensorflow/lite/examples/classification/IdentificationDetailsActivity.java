@@ -113,7 +113,7 @@ public class IdentificationDetailsActivity extends AppCompatActivity {
                         public void onSuccess(DocumentReference documentReference) {
                             Toast.makeText(IdentificationDetailsActivity.this, "Added Successfully", Toast.LENGTH_SHORT).show();
                             deleteFromFirebase();
-                            Intent i = new Intent(IdentificationDetailsActivity.this,IdentificationListActivity.class);
+                            Intent i = new Intent(IdentificationDetailsActivity.this,BottomNavActivity.class);
                             startActivity(i);
                         }
 
@@ -130,8 +130,8 @@ public class IdentificationDetailsActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Log.d(TAG, "DocumentSnapshot "+ firebaseID.get(pos) + "successfully deleted!");
-                        Intent i = new Intent(IdentificationDetailsActivity.this,BottomNavActivity.class);
-                        startActivity(i);
+//                        Intent i = new Intent(IdentificationDetailsActivity.this,BottomNavActivity.class);
+//                        startActivity(i);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

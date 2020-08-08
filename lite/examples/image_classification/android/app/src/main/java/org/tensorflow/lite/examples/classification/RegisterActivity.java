@@ -69,7 +69,6 @@ public class RegisterActivity extends AppCompatActivity {
                 String name = etName.getText().toString().trim();
                 String number = etNumber.getText().toString().trim();
 
-                progressBar.setVisibility(View.VISIBLE);
                 tvLogin.setEnabled(false);
                 btnRegister.setEnabled(false);
                 etName.setEnabled(false);
@@ -156,6 +155,7 @@ public class RegisterActivity extends AppCompatActivity {
                             user.put("Name", name);
                             user.put("Contact Number", numInt);
                             user.put("Role", "Member");
+                            progressBar.setVisibility(View.VISIBLE);
                             documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
