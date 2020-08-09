@@ -33,7 +33,11 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FileDownloadTask;
@@ -51,12 +55,18 @@ public class DashboardActivity extends Fragment {
 
     List<DataEntry> dataEntries = new ArrayList<>();
 
+    private final String COLLECTION_KEY = "identified";
+
     AnyChartView anyChartView;
     FirebaseFirestore fbFirestore;
-    CollectionReference IdentifiedRef;
+    DocumentReference IdentifiedRef;
     FirebaseStorage fbStorage;
     Spinner spinner;
     Button btnDownload;
+    ArrayList<Identified> identifiedList = new ArrayList<Identified>();
+    ArrayList<String> identifiedIDList = new ArrayList<>();
+
+    int tempnum = 0;
 
 //    String[] months = {"Jan","feb","Mar","abc","efg","6","77","88","99","10","11","12","13","14","15"};
 //    int[] earnings = {100,200,300,234,567,456,100,200,300,234,567,456,100,200,300};
@@ -81,15 +91,14 @@ public class DashboardActivity extends Fragment {
         anyChartView = view.findViewById(R.id.any_chart_view);
         fbFirestore = FirebaseFirestore.getInstance();
         fbStorage = FirebaseStorage.getInstance();
-        IdentifiedRef = fbFirestore.collection("identified");
         spinner = view.findViewById(R.id.spinnerNames);
         btnDownload = view.findViewById(R.id.btnDownload);
 
         btnDownload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Toast.makeText(getContext(), "download toast", Toast.LENGTH_SHORT).show();
-//                downloadImages();
+                Toast.makeText(getContext(), "download toast", Toast.LENGTH_SHORT).show();
+                downloadImages();
             }
         });
 
@@ -166,49 +175,89 @@ public class DashboardActivity extends Fragment {
     }
 
     private void downloadImages() {
-        StorageReference imageRef = fbStorage.getReferenceFromUrl("https://firebasestorage.googleapis.com/v0/b/fyp-plant-disease-detection.appspot.com/o/images%2F07-22-20%2004-11-29?alt=media&token=82cb032f-f85b-48de-93aa-9a098a0fd382");
 
-        String folderLocation = Environment.getExternalStorageDirectory().getAbsolutePath() + "/ImageTest";
-
-        File folder = new File(folderLocation);
-        if (folder.exists() == false){
-            boolean result = folder.mkdir();
-            if (result == true){
-                Log.d("File Read/Write", "Folder created");
-            }
-        }
-
-        final File rootPath = new File(folderLocation, "ImageTest");
-
-        if (!rootPath.exists()) {
-            rootPath.mkdirs();
-        }
-
-
-        final File localFile = new File(rootPath, "Nature.jpg");
-
-       imageRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener <FileDownloadTask.TaskSnapshot>() {
+        fbFirestore.collection(COLLECTION_KEY).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
-            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                Log.e("firebase ", ";local tem file created  created " + localFile.toString());
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    for(DocumentSnapshot document: task.getResult()){
+                        Log.d("IdentificationList", document.getId() + " => " + document.getData());
 
-                if (!isVisible()){
-                    return;
-                }
+                        String identified = document.getId();
+                        identifiedIDList.add(identified);
+                        RetrieveData(identified);
 
-                if (localFile.canRead()){
+                    }
 
                 }
-
-                Toast.makeText(getContext(), "Download Completed", Toast.LENGTH_SHORT).show();
-                Toast.makeText(getContext(), "Internal storage/MADBO/Nature.jpg", Toast.LENGTH_SHORT).show();
+                else{
+                    Log.d("IdentificationActivity", "Error getting documents: ", task.getException());
+                }
 
             }
-        }).addOnFailureListener(new OnFailureListener() {
+        });
+    }
+
+    private void RetrieveData(String identified) {
+        IdentifiedRef = fbFirestore.collection("identified").document(identified);
+        IdentifiedRef.addSnapshotListener(getActivity(), new EventListener<DocumentSnapshot>() {
             @Override
-            public void onFailure(@NonNull Exception exception) {
-                Log.e("firebase ", ";local tem file not created  created " + exception.toString());
-                Toast.makeText(getContext(), "Download Incompleted", Toast.LENGTH_SHORT).show();
+            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                String oldDiseaseName = documentSnapshot.getString("oldDiseaseName");
+                String newDiseaseName = documentSnapshot.getString("newDiseaseName");
+                String image = documentSnapshot.getString("image");
+                String documentID = documentSnapshot.getId();
+
+                identifiedList.add(new Identified(oldDiseaseName, newDiseaseName, image));
+                Log.d("Loop List size: ",identifiedList.size() + "");
+
+                StorageReference imageRef = fbStorage.getReferenceFromUrl(image);
+
+                String folderLocation = Environment.getExternalStorageDirectory().getAbsolutePath() + "/PlantDiseaseImages/";
+
+                File folder = new File(folderLocation);
+                if (folder.exists() == false){
+                    boolean result = folder.mkdir();
+                    if (result == true){
+                        Log.d("File Read/Write", "Folder created");
+                    }
+                }
+
+                final File rootPath = new File(folderLocation, newDiseaseName);
+
+                if (!rootPath.exists()) {
+                    rootPath.mkdirs();
+                }
+
+                tempnum +=1;
+
+                final File localFile = new File(rootPath, documentID + ".jpg");
+
+                imageRef.getFile(localFile).addOnSuccessListener(new OnSuccessListener <FileDownloadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                        Log.e("firebase ", ";local tem file created  created " + localFile.toString());
+
+                        if (!isVisible()){
+                            return;
+                        }
+
+                        if (localFile.canRead()){
+
+                        }
+
+                        Toast.makeText(getContext(), "Download Completed", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "Internal storage/" + newDiseaseName + "/" + documentID + ".jpg", Toast.LENGTH_SHORT).show();
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        Log.e("firebase ", ";local tem file not created  created " + exception.toString());
+                        Toast.makeText(getContext(), "Download Incompleted", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
             }
         });
     }
