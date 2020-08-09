@@ -16,11 +16,13 @@
 
 package org.tensorflow.lite.examples.classification;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Matrix;
 import android.graphics.Typeface;
 import android.media.ImageReader.OnImageAvailableListener;
+import android.os.Bundle;
 import android.os.Environment;
 import android.os.SystemClock;
 import android.provider.MediaStore;
@@ -28,7 +30,11 @@ import android.text.format.DateFormat;
 import android.util.Log;
 import android.util.Size;
 import android.util.TypedValue;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -56,10 +62,26 @@ public class ClassifierActivity extends CameraActivity implements OnImageAvailab
   private Integer sensorOrientation;
   private Classifier classifier;
   private BorderedText borderedText;
+  Button btn_logout;
   /** Input image size of the model along x axis. */
   private int imageSizeX;
   /** Input image size of the model along y axis. */
   private int imageSizeY;
+
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    btn_logout = findViewById(R.id.btn_logout);
+    btn_logout.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        Intent intent = new Intent(ClassifierActivity.this, LoginActivity.class);
+        FirebaseAuth.getInstance().signOut();
+        startActivity(intent);
+        finish();
+      }
+    });
+  }
 
   @Override
   protected int getLayoutId() {

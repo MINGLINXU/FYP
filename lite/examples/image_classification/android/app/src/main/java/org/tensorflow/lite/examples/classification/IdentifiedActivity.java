@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,6 +16,7 @@ public class IdentifiedActivity extends AppCompatActivity {
 
     ImageView identifedIV;
     TextView identifiedTV;
+    Button btn_close;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +25,7 @@ public class IdentifiedActivity extends AppCompatActivity {
 
         identifedIV = findViewById(R.id.imageViewIdentified);
         identifiedTV = findViewById(R.id.textViewIdentified);
+        btn_close = findViewById(R.id.btn_close);
 
         Intent i = getIntent();
         String url = i.getStringExtra("Image");
@@ -37,5 +41,13 @@ public class IdentifiedActivity extends AppCompatActivity {
         String format = String.format("%-50s %s\n%-50s %s\n%-50s %s\n",name,confidence,name1,confidence1,name2,confidence2);
 
         identifiedTV.setText(format);
+        btn_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(IdentifiedActivity.this, ClassifierActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
     }
 }

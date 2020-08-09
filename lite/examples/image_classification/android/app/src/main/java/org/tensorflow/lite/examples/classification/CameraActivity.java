@@ -71,6 +71,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -139,7 +140,7 @@ public abstract class CameraActivity extends AppCompatActivity
 //  private Spinner modelSpinner;
 //  private Spinner deviceSpinner;
 //  private TextView threadsTextView;
-  private Button btn_save;
+  private Button btn_save, btn_logout;
 
   private Model model = Model.FLOAT_MOBILENET;
   private Device device = Device.CPU;
@@ -179,6 +180,7 @@ public abstract class CameraActivity extends AppCompatActivity
     sheetBehavior = BottomSheetBehavior.from(bottomSheetLayout);
     bottomSheetArrowImageView = findViewById(R.id.bottom_sheet_arrow);
     btn_save = findViewById(R.id.btn_save);
+    btn_logout = findViewById(R.id.btn_logout);
 
 
     fbFirestore = FirebaseFirestore.getInstance();
@@ -269,6 +271,7 @@ public abstract class CameraActivity extends AppCompatActivity
         uploadImage(rotatedBitmap);
       }
     });
+
 
   }
 
@@ -362,6 +365,7 @@ public abstract class CameraActivity extends AppCompatActivity
                   i.putExtra("Name2",name2);
 
                   startActivity(i);
+                  finish();
 
                 }
               })
