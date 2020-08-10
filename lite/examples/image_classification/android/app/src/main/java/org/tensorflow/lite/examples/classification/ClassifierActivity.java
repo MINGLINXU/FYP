@@ -62,7 +62,6 @@ public class ClassifierActivity extends CameraActivity implements OnImageAvailab
   private Integer sensorOrientation;
   private Classifier classifier;
   private BorderedText borderedText;
-  Button btn_logout;
   /** Input image size of the model along x axis. */
   private int imageSizeX;
   /** Input image size of the model along y axis. */
@@ -71,16 +70,7 @@ public class ClassifierActivity extends CameraActivity implements OnImageAvailab
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    btn_logout = findViewById(R.id.btn_logout);
-    btn_logout.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        Intent intent = new Intent(ClassifierActivity.this, LoginActivity.class);
-        FirebaseAuth.getInstance().signOut();
-        startActivity(intent);
-        finish();
-      }
-    });
+
   }
 
   @Override

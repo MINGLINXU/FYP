@@ -151,6 +151,19 @@ public class IdentificationDetailsActivity extends AppCompatActivity {
                 int pos = intent.getIntExtra("pos", 0);
                 ArrayList<String> firebaseID = intent.getStringArrayListExtra("FirebaseID");
 
+                StorageReference storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(ids.getImage());
+                storageReference.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(IdentificationDetailsActivity.this, "Deleted Image From Firebase Storage", Toast.LENGTH_SHORT);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        // Error
+                    }
+                });
+
                 fbFirestore.collection("identification").document(firebaseID.get(pos))
                         .delete()
                         .addOnSuccessListener(new OnSuccessListener<Void>() {

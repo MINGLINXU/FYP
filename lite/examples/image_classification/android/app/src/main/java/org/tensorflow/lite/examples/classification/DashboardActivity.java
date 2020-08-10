@@ -254,7 +254,7 @@ public class DashboardActivity extends Fragment {
                         }
 
                         Toast.makeText(getContext(), "Download Completed", Toast.LENGTH_SHORT).show();
-                        Toast.makeText(getContext(), "Internal storage/" + newDiseaseName + "/" + documentID + ".jpg", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "External storage/" + newDiseaseName + "/" + documentID + ".jpg", Toast.LENGTH_SHORT).show();
 
                     }
                 }).addOnFailureListener(new OnFailureListener() {

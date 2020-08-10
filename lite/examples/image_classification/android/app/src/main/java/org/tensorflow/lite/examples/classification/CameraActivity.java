@@ -21,6 +21,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -47,6 +48,7 @@ import android.os.HandlerThread;
 import android.os.Trace;
 import androidx.annotation.NonNull;
 import androidx.annotation.UiThread;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.text.format.DateFormat;
@@ -62,6 +64,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -153,6 +156,7 @@ public abstract class CameraActivity extends AppCompatActivity
   FirebaseStorage fbStorage;
   String downloadUrl;
 
+  ProgressBar progressBar;
 
   @Override
   protected void onCreate(final Bundle savedInstanceState) {
@@ -181,7 +185,7 @@ public abstract class CameraActivity extends AppCompatActivity
     bottomSheetArrowImageView = findViewById(R.id.bottom_sheet_arrow);
     btn_save = findViewById(R.id.btn_save);
     btn_logout = findViewById(R.id.btn_logout);
-
+    progressBar = findViewById(R.id.progressBar2);
 
     fbFirestore = FirebaseFirestore.getInstance();
     fbStorage = FirebaseStorage.getInstance();
@@ -266,12 +270,38 @@ public abstract class CameraActivity extends AppCompatActivity
         matrix.postRotate(90);
         Bitmap scaledBitmap = Bitmap.createScaledBitmap(rgbFrameBitmap, previewWidth, previewHeight, true);
         Bitmap rotatedBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth(), scaledBitmap.getHeight(), matrix, true);
+        btn_save.setEnabled(false);
+        btn_logout.setEnabled(false);
+        progressBar.setVisibility(View.VISIBLE);
 //        saveImage(rotatedBitmap);
 
         uploadImage(rotatedBitmap);
       }
     });
 
+    btn_logout.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(CameraActivity.this);
+        alertDialogBuilder
+                .setMessage("Are You Sure You Want To Logout?")
+                .setCancelable(false)
+                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                  @Override
+                  public void onClick(DialogInterface dialog, int which) {
+                    FirebaseAuth.getInstance().signOut();
+                    startActivity(new Intent(CameraActivity.this, LoginActivity.class));
+                    finish();
+                  }
+                })
+                .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                  @Override
+                  public void onClick(DialogInterface dialog, int which) {
+                  }
+                });
+        alertDialogBuilder.show();
+      }
+    });
 
   }
 
