@@ -3,9 +3,14 @@ package org.tensorflow.lite.examples.classification;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.PermissionChecker;
 import androidx.fragment.app.Fragment;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.nfc.Tag;
 import android.os.Bundle;
@@ -93,6 +98,8 @@ public class DashboardActivity extends Fragment {
         fbStorage = FirebaseStorage.getInstance();
         spinner = view.findViewById(R.id.spinnerNames);
         btnDownload = view.findViewById(R.id.btnDownload);
+
+        checkPermission();
 
         btnDownload.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -301,5 +308,17 @@ public class DashboardActivity extends Fragment {
 
 
     }
+
+    public boolean checkPermission() {
+
+        int permissionCheck_Storage = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if(permissionCheck_Storage != PermissionChecker.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
+            return false;
+        }
+
+        return true;
+    }
+
 
 }
