@@ -58,7 +58,6 @@ public class ClassifierActivity extends CameraActivity implements OnImageAvailab
   private static final Size DESIRED_PREVIEW_SIZE = new Size(640, 480);
   private static final float TEXT_SIZE_DIP = 10;
   private Bitmap rgbFrameBitmap = null;
-//  private long lastProcessingTimeMs;
   private Integer sensorOrientation;
   private Classifier classifier;
   private BorderedText borderedText;
@@ -121,10 +120,8 @@ public class ClassifierActivity extends CameraActivity implements OnImageAvailab
           @Override
           public void run() {
             if (classifier != null) {
-//              final long startTime = SystemClock.uptimeMillis();
               final List<Classifier.Recognition> results =
                   classifier.recognizeImage(rgbFrameBitmap, sensorOrientation);
-//              lastProcessingTimeMs = SystemClock.uptimeMillis() - startTime;
               LOGGER.v("Detect: %s", results);
 
               runOnUiThread(
@@ -132,11 +129,7 @@ public class ClassifierActivity extends CameraActivity implements OnImageAvailab
                     @Override
                     public void run() {
                       showResultsInBottomSheet(results);
-//                      showFrameInfo(previewWidth + "x" + previewHeight);
-//                      showCropInfo(imageSizeX + "x" + imageSizeY);
-//                      showCameraResolution(cropSize + "x" + cropSize);
-//                      showRotationInfo(String.valueOf(sensorOrientation));
-//                      showInference(lastProcessingTimeMs + "ms");
+
 
                     }
                   });

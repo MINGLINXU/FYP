@@ -130,8 +130,6 @@ public class IdentificationDetailsActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Log.d(TAG, "DocumentSnapshot "+ firebaseID.get(pos) + "successfully deleted!");
-//                        Intent i = new Intent(IdentificationDetailsActivity.this,BottomNavActivity.class);
-//                        startActivity(i);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

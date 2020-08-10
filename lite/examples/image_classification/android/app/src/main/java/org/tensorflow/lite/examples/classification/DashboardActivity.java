@@ -73,8 +73,6 @@ public class DashboardActivity extends Fragment {
 
     int tempnum = 0;
 
-//    String[] months = {"Jan","feb","Mar","abc","efg","6","77","88","99","10","11","12","13","14","15"};
-//    int[] earnings = {100,200,300,234,567,456,100,200,300,234,567,456,100,200,300};
 
     ArrayList<String> labels = new ArrayList<>();
     ArrayList<Integer> count = new ArrayList<>();
