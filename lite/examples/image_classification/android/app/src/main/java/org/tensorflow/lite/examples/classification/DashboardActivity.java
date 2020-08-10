@@ -109,21 +109,21 @@ public class DashboardActivity extends Fragment {
             }
         });
 
-        diseaseNames.add("0 Pepper bell Bacterial spot");
-        diseaseNames.add("1 Pepper bell healthy");
-        diseaseNames.add("2 Potato Early blight");
-        diseaseNames.add("3 Potato healthy");
-        diseaseNames.add("4 Potato Late_blight");
-        diseaseNames.add("5 Tomato Bacterial spot");
-        diseaseNames.add("6 Tomato Early blight");
-        diseaseNames.add("7 Tomato healthy");
-        diseaseNames.add("8 Tomato Late blight");
-        diseaseNames.add("9 Tomato Leaf Mold");
-        diseaseNames.add("10 Tomato Septoria leaf spot");
-        diseaseNames.add("11 Tomato Spider mites Two-spotted spider mite");
-        diseaseNames.add("12 Tomato Target Spot");
-        diseaseNames.add("13 Tomato Tomato mosaic virus");
-        diseaseNames.add("14 Tomato Tomato Yellow Leaf Curl Virus");
+        diseaseNames.add("Pepper bell Bacterial spot");
+        diseaseNames.add("Pepper bell healthy");
+        diseaseNames.add("Potato Early blight");
+        diseaseNames.add("Potato healthy");
+        diseaseNames.add("Potato Late_blight");
+        diseaseNames.add("Tomato Bacterial spot");
+        diseaseNames.add("Tomato Early blight");
+        diseaseNames.add("Tomato healthy");
+        diseaseNames.add("Tomato Late blight");
+        diseaseNames.add("Tomato Leaf Mold");
+        diseaseNames.add("Tomato Septoria leaf spot");
+        diseaseNames.add("Tomato Spider mites Two-spotted spider mite");
+        diseaseNames.add("Tomato Target Spot");
+        diseaseNames.add("Tomato Tomato mosaic virus");
+        diseaseNames.add("Tomato Tomato Yellow Leaf Curl Virus");
 
         retrieveData();
 

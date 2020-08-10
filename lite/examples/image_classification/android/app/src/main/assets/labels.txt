@@ -1,15 +1,15 @@
-0 Pepper bell Bacterial spot
-1 Pepper bell healthy
-2 Potato Early blight
-3 Potato healthy
-4 Potato Late_blight
-5 Tomato Bacterial spot
-6 Tomato Early blight
-7 Tomato healthy
-8 Tomato Late blight
-9 Tomato Leaf Mold
-10 Tomato Septoria leaf spot
-11 Tomato Spider mites Two-spotted spider mite
-12 Tomato Target Spot
-13 Tomato Tomato mosaic virus
-14 Tomato Tomato Yellow Leaf Curl Virus
+Pepper bell Bacterial spot
+Pepper bell healthy
+Potato Early blight
+Potato healthy
+Potato Late_blight
+Tomato Bacterial spot
+Tomato Early blight
+Tomato healthy
+Tomato Late blight
+Tomato Leaf Mold
+Tomato Septoria leaf spot
+Tomato Spider mites Two-spotted spider mite
+Tomato Target Spot
+Tomato Tomato mosaic virus
+Tomato Tomato Yellow Leaf Curl Virus

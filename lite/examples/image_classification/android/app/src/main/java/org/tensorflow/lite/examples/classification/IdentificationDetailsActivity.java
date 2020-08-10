@@ -143,47 +143,72 @@ public class IdentificationDetailsActivity extends AppCompatActivity {
                             }
                     });
         }else {
-            String disease = spinner.getSelectedItem().toString();;
-            Identified identified = new Identified(ids.getdiseaseName(), disease, ids.getImage());
-            IdentifiedRef.add(identified)
-                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                        @Override
-                        public void onSuccess(DocumentReference documentReference) {
-                            Toast.makeText(IdentificationDetailsActivity.this, "Added Successfully", Toast.LENGTH_SHORT).show();
-                            deleteFromFirebase();
-                        }
+            String disease = spinner.getSelectedItem().toString();
 
-                        private void deleteFromFirebase() {
-                            Intent i = getIntent();
+            if (disease.equalsIgnoreCase("Not-applicable")){
+                Intent intent = getIntent();
 
-                            int pos = i.getIntExtra("pos",0);
-                            ArrayList<String> firebaseID = i.getStringArrayListExtra("FirebaseID");
+                int pos = intent.getIntExtra("pos", 0);
+                ArrayList<String> firebaseID = intent.getStringArrayListExtra("FirebaseID");
 
-                            fbFirestore.collection("identification").document(firebaseID.get(pos))
-                                    .delete()
-                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            Intent i = new Intent(IdentificationDetailsActivity.this,BottomNavActivity.class);
-                                            startActivity(i);
-                                            Log.d(TAG, "DocumentSnapshot "+ firebaseID.get(pos) + "successfully deleted!");
-                                        }
-                                    })
-                                    .addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            Log.w(TAG, "Error deleting document", e);
-                                        }
-                                    });
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(IdentificationDetailsActivity.this, "Error!", Toast.LENGTH_SHORT).show();
-                            Log.d(TAG, e.toString());
-                        }
-                    });
+                fbFirestore.collection("identification").document(firebaseID.get(pos))
+                        .delete()
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Intent i = new Intent(IdentificationDetailsActivity.this, BottomNavActivity.class);
+                                startActivity(i);
+                                Log.d(TAG, "DocumentSnapshot " + firebaseID.get(pos) + "successfully deleted!");
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.w(TAG, "Error deleting document", e);
+                            }
+                        });
+            }else {
+                Identified identified = new Identified(ids.getdiseaseName(), disease, ids.getImage());
+                IdentifiedRef.add(identified)
+                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                            @Override
+                            public void onSuccess(DocumentReference documentReference) {
+                                Toast.makeText(IdentificationDetailsActivity.this, "Added Successfully", Toast.LENGTH_SHORT).show();
+                                deleteFromFirebase();
+                            }
+
+                            private void deleteFromFirebase() {
+                                Intent i = getIntent();
+
+                                int pos = i.getIntExtra("pos", 0);
+                                ArrayList<String> firebaseID = i.getStringArrayListExtra("FirebaseID");
+
+                                fbFirestore.collection("identification").document(firebaseID.get(pos))
+                                        .delete()
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                Intent i = new Intent(IdentificationDetailsActivity.this, BottomNavActivity.class);
+                                                startActivity(i);
+                                                Log.d(TAG, "DocumentSnapshot " + firebaseID.get(pos) + "successfully deleted!");
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Log.w(TAG, "Error deleting document", e);
+                                            }
+                                        });
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(IdentificationDetailsActivity.this, "Error!", Toast.LENGTH_SHORT).show();
+                                Log.d(TAG, e.toString());
+                            }
+                        });
+            }
         }
 
     }
